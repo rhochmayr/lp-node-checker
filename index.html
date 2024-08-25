@@ -115,7 +115,6 @@
         }
     </style>
 </head>
-
 <body>
     <h1>LilyPad RP Node Checker</h1>
     <div class="container">
@@ -127,7 +126,6 @@
         </div>
         <div id="output"></div>
     </div>
-
     <script>
         let allResults = [];
         const offset = 10000;
@@ -236,12 +234,35 @@
                 filteredByMethodId.filter(tx => tx.from.toLowerCase() === specificAddress && tx.timeStamp.toISOString().split('T')[0] === day),
                 tx => tx.timeStamp.toISOString().split(':')[0]
             );
-            const hourCounts = Object.entries(groupedByHour).map(([key, value]) => ({ Hour: key, Count: value.length }));
-
-            let hourTableHtml = `<h2>Hourly PoW Records for ${day}</h2><table><thead><tr><th>Hour</th><th>Count</th></tr></thead><tbody>`;
-            hourCounts.forEach(row => {
-                hourTableHtml += `<tr><td>${row.Hour}</td><td>${row.Count}</td></tr>`;
+            const hourCounts = Array(24).fill(0).map((_, hour) => {
+                const hourStr = day + 'T' + (23 - hour).toString().padStart(2, '0');
+                return {
+                    Hour: hourStr,
+                    Count: groupedByHour[hourStr] ? groupedByHour[hourStr].length : 0
+                };
             });
+
+            let consecutiveHours = 0;
+            let hourTableHtml = `<h2>Hourly PoW Records for ${day}</h2><table><thead><tr><th>Hour</th><th>Count</th><th>Consecutive</th></tr></thead><tbody>`;
+            hourCounts.forEach((row, index) => {
+                let consecutiveMark = '';
+                if (row.Count >= 2) {
+                    consecutiveHours += 1;
+                    if (consecutiveHours >= 4) {
+                        // Mark the last 4 (or more) consecutive hours
+                        for (let i = index - consecutiveHours + 1; i <= index; i++) {
+                            hourCounts[i].consecutiveMark = '✔';
+                        }
+                    }
+                } else {
+                    consecutiveHours = 0;
+                }
+            });
+
+            hourCounts.forEach(row => {
+                hourTableHtml += `<tr><td>${row.Hour.split('T')[1]}:00</td><td>${row.Count}</td><td style="background-color: ${row.consecutiveMark ? '#d4edda' : ''}">${row.consecutiveMark || ''}</td></tr>`;
+            });
+
             hourTableHtml += `</tbody></table>`;
 
             // Remove existing hourly records table if present
@@ -260,7 +281,7 @@
             dayRows.forEach(row => {
                 if (row.firstChild.textContent === day) {
                     row.classList.add('selected-day');
-                    row.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' }); // Scroll to the selected day within the daily table
+                    row.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
                 } else {
                     row.classList.remove('selected-day');
                 }
@@ -279,5 +300,4 @@
         }
     </script>
 </body>
-
 </html>
