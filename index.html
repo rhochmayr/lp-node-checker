@@ -258,7 +258,7 @@
             });
 
             let consecutiveHours = 0;
-            let hourTableHtml = `<h2>Hourly PoW Records for ${day}</h2><table id="hourly-records"><thead><tr><th>Hour</th><th>Count</th><th>Consecutive</th></tr></thead><tbody>`;
+            let hourTableHtml = `<h2>Hourly PoW Records for ${day}</h2><table id="hourly-records"><thead><tr><th>Hour</th><th>Count</th><th>4 Consecutive +</th></tr></thead><tbody>`;
             hourCounts.forEach((row, index) => {
                 let consecutiveMark = '';
                 if (row.Count >= 2) {
