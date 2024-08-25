@@ -113,8 +113,23 @@
             background-color: #add8e6;
             /* Light blue background */
         }
+
+        #hourly-records th:nth-child(1),
+        #hourly-records td:nth-child(1) {
+            width: 60%;
+        }
+
+        #hourly-records th:nth-child(2),
+        #hourly-records td:nth-child(2),
+        #hourly-records th:nth-child(3),
+        #hourly-records td:nth-child(3) {
+            width: 20%;
+            text-align: left;
+            /* Ensure text remains left-aligned */
+        }
     </style>
 </head>
+
 <body>
     <h1>LilyPad RP Node Checker</h1>
     <div class="container">
@@ -243,7 +258,7 @@
             });
 
             let consecutiveHours = 0;
-            let hourTableHtml = `<h2>Hourly PoW Records for ${day}</h2><table><thead><tr><th>Hour</th><th>Count</th><th>Consecutive</th></tr></thead><tbody>`;
+            let hourTableHtml = `<h2>Hourly PoW Records for ${day}</h2><table id="hourly-records"><thead><tr><th>Hour</th><th>Count</th><th>Consecutive</th></tr></thead><tbody>`;
             hourCounts.forEach((row, index) => {
                 let consecutiveMark = '';
                 if (row.Count >= 2) {
@@ -300,4 +315,5 @@
         }
     </script>
 </body>
+
 </html>
